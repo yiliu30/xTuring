@@ -5,6 +5,7 @@ from xturing.engines.gpt2_engine import (
     GPT2Int8Engine,
     GPT2LoraEngine,
     GPT2LoraInt8Engine,
+    GPT2WoqEngine,
 )
 from xturing.models.causal import (
     CausalInt8Model,
@@ -40,3 +41,9 @@ class GPT2LoraInt8(CausalLoraInt8Model):
 
     def __init__(self, weights_path: Optional[str] = None):
         super().__init__(GPT2LoraInt8Engine.config_name, weights_path)
+
+class GPT2Woq(CausalModel):
+    config_name: str = "gpt2_woq"
+    
+    def __init__(self, weights_path: Optional[str] = None):
+        super().__init__(GPT2WoqEngine.config_name, weights_path)

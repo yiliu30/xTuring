@@ -51,14 +51,16 @@ class CausalModel(BaseModel):
 
         self.model_name = engine.replace("_engine", "")
 
-        # Finetuning config
-        self.finetuning_args = load_config(
-            model_name=self.model_name,
-            config_path=Path(__file__).parent.parent
-            / "config"
-            / "finetuning_config.yaml",
-            data_class=FinetuningConfig,
-        )
+        if "woq" not in self.model_name:
+            # Finetuning config
+            self.finetuning_args = load_config(
+                model_name=self.model_name,
+                config_path=Path(__file__).parent.parent
+                / "config"
+                / "finetuning_config.yaml",
+                data_class=FinetuningConfig,
+            )
+            logger.debug(f"Finetuning parameters: {self.finetuning_args}")
 
         # Generation config
 
@@ -69,8 +71,6 @@ class CausalModel(BaseModel):
             / "generation_config.yaml",
             data_class=GenerationConfig,
         )
-
-        logger.debug(f"Finetuning parameters: {self.finetuning_args}")
         logger.debug(f"Generation parameters: {self.generation_args}")
 
         self.transfer_to_device = transfer_to_device
@@ -197,9 +197,9 @@ class CausalModel(BaseModel):
         xturing_config_path = Path(path) / "xturing.json"
         xturing_config = {
             "model_name": self.model_name,
-            "finetuning_config": self.finetuning_args.dict(),
-            "generation_config": self.generation_args.dict(),
-        }
+            "generation_config": self.generation_args.dict()}
+        if hasattr(self, "finetuning_args") and self.finetuning_args:
+            xturing_config["finetuning_config"] = self.finetuning_args.dict()
 
         with open(str(xturing_config_path), "w", encoding="utf-8") as f:
             json.dump(xturing_config, f, ensure_ascii=False, indent=4)

@@ -45,3 +45,11 @@ class GPT2LoraInt8Engine(CausalLoraEngine):
         )
 
         self.tokenizer.pad_token = self.tokenizer.eos_token
+
+class GPT2WoqEngine(CausalEngine):
+    config_name: str = "gpt2_woq_engine"
+    
+    def __init__(self, weights_path: Optional[Union[str, Path]] = None):
+        super().__init__(model_name="gpt2", weights_path=weights_path, weight_only_quant=True)
+        
+        self.tokenizer.pad_token = self.tokenizer.eos_token

@@ -37,6 +37,7 @@ from xturing.engines.gpt2_engine import (
     GPT2Int8Engine,
     GPT2LoraEngine,
     GPT2LoraInt8Engine,
+    GPT2WoqEngine,
 )
 from xturing.engines.gptj_engine import (
     GPTJEngine,
@@ -97,6 +98,7 @@ BaseEngine.add_to_registry(GPT2Engine.config_name, GPT2Engine)
 BaseEngine.add_to_registry(GPT2Int8Engine.config_name, GPT2Int8Engine)
 BaseEngine.add_to_registry(GPT2LoraEngine.config_name, GPT2LoraEngine)
 BaseEngine.add_to_registry(GPT2LoraInt8Engine.config_name, GPT2LoraInt8Engine)
+BaseEngine.add_to_registry(GPT2WoqEngine.config_name, GPT2WoqEngine)
 BaseEngine.add_to_registry(LLamaEngine.config_name, LLamaEngine)
 BaseEngine.add_to_registry(LLamaInt8Engine.config_name, LLamaInt8Engine)
 BaseEngine.add_to_registry(LlamaLoraEngine.config_name, LlamaLoraEngine)

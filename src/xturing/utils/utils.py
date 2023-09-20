@@ -1,4 +1,5 @@
 import contextlib
+import importlib
 import io
 import logging
 import os
@@ -150,3 +151,14 @@ def _index_samples(samples: List[Any], logger: logging.Logger):
     logger.info(f"Evaluating {len(indices)} samples")
     work_items = [(samples[i], i) for i in indices]
     return work_items
+
+
+def is_itrex_available():
+    return importlib.util.find_spec("intel_extension_for_transformers") is not None
+
+def assert_itrex_is_available():
+    assert is_itrex_available(), (
+        "To use weight-only quantization, please install the `intel-extension-for-transformers` package.",
+        "You can install it with `pip install intel-extension-for-transformers`."
+    )
+

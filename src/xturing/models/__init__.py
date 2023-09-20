@@ -27,7 +27,7 @@ from xturing.models.generic import (
     GenericLoraModel,
     GenericModel,
 )
-from xturing.models.gpt2 import GPT2, GPT2Int8, GPT2Lora, GPT2LoraInt8
+from xturing.models.gpt2 import GPT2, GPT2Int8, GPT2Lora, GPT2LoraInt8, GPT2Woq
 from xturing.models.gptj import GPTJ, GPTJInt8, GPTJLora, GPTJLoraInt8
 from xturing.models.llama import (
     Llama,
@@ -78,6 +78,7 @@ BaseModel.add_to_registry(GPT2.config_name, GPT2)
 BaseModel.add_to_registry(GPT2Int8.config_name, GPT2Int8)
 BaseModel.add_to_registry(GPT2Lora.config_name, GPT2Lora)
 BaseModel.add_to_registry(GPT2LoraInt8.config_name, GPT2LoraInt8)
+BaseModel.add_to_registry(GPT2Woq.config_name, GPT2Woq)
 BaseModel.add_to_registry(Llama.config_name, Llama)
 BaseModel.add_to_registry(LlamaInt8.config_name, LlamaInt8)
 BaseModel.add_to_registry(LlamaLora.config_name, LlamaLora)

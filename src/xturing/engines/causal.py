@@ -19,7 +19,12 @@ from xturing.engines.lora_engine import (
 )
 from xturing.engines.quant_utils.peft_utils import LoraConfig as peftLoraConfig
 from xturing.engines.quant_utils.peft_utils import prepare_model_for_kbit_training
+from xturing.utils.logging import configure_logger
 from xturing.utils.loss_fns import CrossEntropyLoss
+from xturing.utils.utils import assert_itrex_is_available
+
+
+logger = configure_logger(__name__)
 
 
 class CausalEngine(BaseEngine):
@@ -35,6 +40,8 @@ class CausalEngine(BaseEngine):
         **kwargs,
     ):
         self.model_name = model_name
+        weight_only_quant=kwargs.pop("weight_only_quant", False)
+        # load model from local path
         if weights_path is not None:
             assert Path(
                 weights_path
@@ -56,9 +63,11 @@ class CausalEngine(BaseEngine):
                 )
             self.tokenizer = AutoTokenizer.from_pretrained(weights_path)
         elif model is not None and tokenizer is not None:
+            # model and tokenizer are provided
             self.model = model
             self.tokenizer = tokenizer
         elif model_name is not None:
+            # load model from huggingface
             if load_8bit:
                 device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
                 self.model = AutoModelForCausalLM.from_pretrained(
@@ -72,6 +81,21 @@ class CausalEngine(BaseEngine):
                 for param in self.model.parameters():
                     param.data = param.data.contiguous()
                 self.model = prepare_model_for_int8_training(self.model)
+            elif weight_only_quant:
+                # load model with weight_only
+                assert_itrex_is_available()
+                from intel_extension_for_transformers.transformers import AutoModelForCausalLM, WeightOnlyQuantConfig
+                woq_config = WeightOnlyQuantConfig()
+                if model_name == "gpt2":
+                    model_name = "/mnt/disk4/modelHub/gpt2"
+                    logger.info(f"replace model_name to {model_name}")
+                self.model = AutoModelForCausalLM.from_pretrained(
+                    model_name,
+                    quantization_config=woq_config,
+                    trust_remote_code=trust_remote_code,
+                    **kwargs,
+                    )
+                logger.info(f"Loaded model with weight-only quantization.")
             else:
                 self.model = AutoModelForCausalLM.from_pretrained(
                     model_name,

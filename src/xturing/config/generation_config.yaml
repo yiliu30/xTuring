@@ -194,6 +194,13 @@ gpt2_int8:
   top_p: 0.92
   max_new_tokens: 256
 
+# Top-p sampling
+gpt2_woq:
+  do_sample: true
+  top_k: 0
+  top_p: 0.92
+  max_new_tokens: 256
+
 # Contrastive search
 llama:
   penalty_alpha: 0.6
